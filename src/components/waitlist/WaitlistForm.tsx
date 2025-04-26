@@ -45,44 +45,38 @@ export const WaitlistForm = ({ onSubmit, error, isLoading }: WaitlistFormProps) 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 md:gap-5">
         <div className="flex flex-col gap-1 md:gap-2">
           <label className="text-white/90 text-sm font-medium ml-1">Full Name</label>
-          <motion.div whileFocus={{ scale: 1.01 }}>
-            <Input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleInputChange}
-              required
-              placeholder="Enter your name"
-              className="py-3 px-4 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-white/40"
-            />
-          </motion.div>
+          <Input
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleInputChange}
+            required
+            placeholder="Enter your name"
+            className="py-3 px-4 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-white/40"
+          />
         </div>
         <div className="flex flex-col gap-1 md:gap-2">
           <label className="text-white/90 text-sm font-medium ml-1">Email Address</label>
-          <motion.div whileFocus={{ scale: 1.01 }}>
-            <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              placeholder="Enter your email"
-              className="py-3 px-4 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-white/40"
-            />
-          </motion.div>
+          <Input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+            placeholder="Enter your email"
+            className="py-3 px-4 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-white/40"
+          />
         </div>
         <div className="flex flex-col gap-1 md:gap-2">
           <label className="text-white/90 text-sm font-medium ml-1">Startup Name</label>
-          <motion.div whileFocus={{ scale: 1.01 }}>
-            <Input
-              type="text"
-              name="startupName"
-              value={formData.startupName}
-              onChange={handleInputChange}
-              placeholder="Enter your startup name (optional)"
-              className="py-3 px-4 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-white/40"
-            />
-          </motion.div>
+          <Input
+            type="text"
+            name="startupName"
+            value={formData.startupName}
+            onChange={handleInputChange}
+            placeholder="Enter your startup name (optional)"
+            className="py-3 px-4 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-white/40"
+          />
         </div>
         {error && <p className="text-red-400 text-sm text-center mt-1 md:mt-2">{error}</p>}
         <p className="text-white/80 text-sm text-center">Join now for <strong>exclusive perks</strong> at launch!</p>

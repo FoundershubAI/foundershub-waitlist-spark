@@ -77,11 +77,9 @@ export default function Index() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-left bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
             >
-              <motion.div
-                animate={{ textContent: joinCount }}
-                transition={{ duration: 2 }}
-                className="text-3xl font-bold text-white mb-2"
-              />
+              <div className="text-3xl font-bold text-white mb-2">
+                {joinCount}
+              </div>
               <p className="text-white/70">Founders already joined</p>
             </motion.div>
           </motion.div>
