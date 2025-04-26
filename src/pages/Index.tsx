@@ -1,224 +1,99 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-const featureList = [
-  {
-    title: "Priority Access",
-    description: "Be among the first to experience our platform",
-    gradient: "from-violet-500 to-purple-500",
-  },
-  {
-    title: "Exclusive Benefits",
-    description: "Get special perks reserved for early adopters",
-    gradient: "from-blue-500 to-violet-500",
-  },
-  {
-    title: "Founder Updates",
-    description: "Direct insights into our development journey",
-    gradient: "from-indigo-500 to-blue-500",
-  },
-];
+import { WaitlistForm } from "@/components/waitlist/WaitlistForm";
+import { ParticleBackground } from "@/components/waitlist/ParticleBackground";
+import { SuccessCard } from "@/components/waitlist/SuccessCard";
 
 const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-const validateLinkedIn = (url: string) => url.includes("linkedin.com/");
 
 export default function Index() {
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    linkedin: "",
-  });
   const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [joinCount, setJoinCount] = useState(1247);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!form.fullName) {
-      toast.error("Please enter your name");
+  useEffect(() => {
+    if (!submitted) {
+      const interval = setInterval(() => {
+        setJoinCount(prev => prev + Math.floor(Math.random() * 3));
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [submitted]);
+
+  const handleSubmit = async (formData: { fullName: string; email: string; startupName: string }) => {
+    setError("");
+    if (!formData.fullName) {
+      setError("Please enter your name");
       return;
     }
-    if (!validateEmail(form.email)) {
-      toast.error("Please enter a valid email");
-      return;
-    }
-    if (!validateLinkedIn(form.linkedin)) {
-      toast.error("Please enter a valid LinkedIn URL");
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid email");
       return;
     }
 
-    setLoading(true);
-
+    setIsLoading(true);
     try {
-      // Simulating API call
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       setSubmitted(true);
       toast.success("Successfully joined the waitlist!");
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+    } catch (err) {
+      toast.error("Failed to join waitlist. Please try again.");
+      setError("Submission failed. Please try again.");
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: {
-        duration: 0.5
-      }
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated background elements with new animations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-purple-500/20 blur-[120px] animate-blob" />
-        <div className="absolute -bottom-[30%] -right-[20%] w-[60%] h-[60%] rounded-full bg-blue-500/20 blur-[120px] animate-blob animation-delay-2000" />
-        <div className="absolute top-[20%] right-[20%] w-[45%] h-[45%] rounded-full bg-violet-500/20 blur-[120px] animate-blob animation-delay-4000" />
-      </div>
-
-      {/* Main content container with motion */}
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="container relative z-10 px-4 py-10"
-      >
-        <div className="max-w-6xl mx-auto">
+      <ParticleBackground />
+      
+      <div className="relative z-10 flex h-screen items-center justify-center px-4 md:px-6 max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row w-full items-center justify-between gap-8 md:gap-12">
+          {/* Left Side - Content */}
           <motion.div
-            variants={itemVariants}
-            className="text-center mb-12"
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-left max-w-md w-full"
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               Join the Future of{" "}
-              <span className="bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-400 to-violet-600 bg-clip-text text-transparent">
                 Innovation
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
-              Be part of our exclusive community and get early access to revolutionary features.
+            <p className="text-white/80 text-lg mb-8 leading-relaxed">
+              Be among the first to experience our revolutionary platform. Early adopters get exclusive benefits.
             </p>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-left bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
+            >
+              <motion.div
+                animate={{ textContent: joinCount }}
+                transition={{ duration: 2 }}
+                className="text-3xl font-bold text-white mb-2"
+              />
+              <p className="text-white/70">Founders already joined</p>
+            </motion.div>
           </motion.div>
 
-          {/* Features grid with stagger animation */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {featureList.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                variants={itemVariants}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="relative group"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-200"
-                  style={{
-                    background: `linear-gradient(to right, ${feature.gradient})`,
-                  }}
-                />
-                <div className="relative p-6 bg-gray-900/50 backdrop-blur-xl rounded-lg border border-gray-800">
-                  <h3 className={cn(
-                    "text-xl font-semibold mb-2 bg-gradient-to-r bg-clip-text text-transparent",
-                    feature.gradient
-                  )}>
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-400">{feature.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Form section with AnimatePresence */}
-          <AnimatePresence mode="wait">
-            {submitted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="max-w-md mx-auto text-center p-8 rounded-2xl bg-white/10 backdrop-blur-xl border border-gray-800"
-              >
-                <div className="mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto flex items-center justify-center">
-                    <ArrowRight className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Welcome Aboard! 🚀</h3>
-                <p className="text-gray-300 mb-6">
-                  You're now on our exclusive waitlist. We'll notify you when we're ready to launch.
-                </p>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => window.open("https://twitter.com/intent/tweet?text=Just+joined+the+waitlist!", "_blank")}
-                    className="bg-white/10 hover:bg-white/20 text-white border-gray-700"
-                  >
-                    Share on Twitter
-                  </Button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.form
-                onSubmit={handleSubmit}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="max-w-md mx-auto space-y-6 p-8 rounded-2xl bg-white/10 backdrop-blur-xl border border-gray-800"
-              >
-                <div className="space-y-4">
-                  <Input
-                    type="text"
-                    placeholder="Full Name"
-                    value={form.fullName}
-                    onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                    className="bg-white/10 border-gray-700 text-white placeholder:text-gray-400"
-                  />
-                  <Input
-                    type="email"
-                    placeholder="Email Address"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="bg-white/10 border-gray-700 text-white placeholder:text-gray-400"
-                  />
-                  <Input
-                    type="url"
-                    placeholder="LinkedIn Profile URL"
-                    value={form.linkedin}
-                    onChange={(e) => setForm({ ...form, linkedin: e.target.value })}
-                    className="bg-white/10 border-gray-700 text-white placeholder:text-gray-400"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                  disabled={loading}
-                >
-                  {loading ? "Processing..." : "Join Waitlist"}
-                </Button>
-              </motion.form>
-            )}
-          </AnimatePresence>
+          {/* Right Side - Form/Success */}
+          {!submitted ? (
+            <WaitlistForm onSubmit={handleSubmit} error={error} isLoading={isLoading} />
+          ) : (
+            <SuccessCard />
+          )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
