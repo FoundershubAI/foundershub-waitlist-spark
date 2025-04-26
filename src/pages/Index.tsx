@@ -67,22 +67,46 @@ export default function Index() {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated background elements */}
+      {/* Animated background elements with new animations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-purple-500/20 blur-[120px] animate-blob" />
         <div className="absolute -bottom-[30%] -right-[20%] w-[60%] h-[60%] rounded-full bg-blue-500/20 blur-[120px] animate-blob animation-delay-2000" />
         <div className="absolute top-[20%] right-[20%] w-[45%] h-[45%] rounded-full bg-violet-500/20 blur-[120px] animate-blob animation-delay-4000" />
       </div>
 
-      {/* Main content container */}
-      <div className="container relative z-10 px-4 py-10">
+      {/* Main content container with motion */}
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="container relative z-10 px-4 py-10"
+      >
         <div className="max-w-6xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            variants={itemVariants}
             className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
@@ -96,14 +120,14 @@ export default function Index() {
             </p>
           </motion.div>
 
-          {/* Features grid */}
+          {/* Features grid with stagger animation */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {featureList.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                variants={itemVariants}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
                 className="relative group"
               >
                 <div className="absolute inset-0 bg-gradient-to-r rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-200"
@@ -124,7 +148,7 @@ export default function Index() {
             ))}
           </div>
 
-          {/* Form section */}
+          {/* Form section with AnimatePresence */}
           <AnimatePresence mode="wait">
             {submitted ? (
               <motion.div
@@ -194,7 +218,7 @@ export default function Index() {
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
